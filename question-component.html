@@ -1,0 +1,62 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<dom-module id="question-component">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <paper-listbox attr-for-selected="att-for-answer">
+      <template is="dom-repeat" items="[[answers]]" as="answer">
+          <paper-item att-for-answer="[[answer]]" > [[answer]] </paper-item>
+      </template>
+    </paper-listbox>
+    <paper-button on-click="__checkAnswer" toggles raised class="green">Responder</paper-button>
+    
+  </template>
+
+  <script>
+    /**
+     * `question-component`
+     * question component with any number of questions and setting response 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class QuestionComponent extends Polymer.Element {
+      static get is() { return 'question-component'; }
+      static get properties() {
+        return {
+          answers: {
+            type: Array,
+            value: ['Answer 1', 'Answer 2', 'Answer 3']
+          },
+          rightAnswer: {
+            type: String,
+            value: 'Answer 2'
+          },
+          selected: {
+            type: String,
+            value: ''
+          }
+        };
+      }
+
+      __checkAnswer(){
+        console.log(this.shadowRoot.querySelector('paper-listbox').selected)
+        if(this.shadowRoot.querySelector('paper-listbox').selected === this.rightAnswer){
+          alert('Respuesta correcta')
+        } else {
+          alert('Respuesta incorrecta')
+        }
+      }
+    }
+
+    window.customElements.define(QuestionComponent.is, QuestionComponent);
+  </script>
+</dom-module>
