@@ -2,6 +2,7 @@
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-toast/paper-toast.html">
 
 <dom-module id="question-component">
   <template>
@@ -9,13 +10,32 @@
       :host {
         display: block;
       }
+      #main-container {
+        padding: 100px;
+        border: 1px solid gray;
+      }
+
+      .right-toast{
+        --paper-toast-background-color: green;
+        --paper-toast-color: white;
+      }
+
+      .wrong-toast{
+        --paper-toast-background-color: red;
+        --paper-toast-color: white;
+      }
     </style>
-    <paper-listbox attr-for-selected="att-for-answer">
-      <template is="dom-repeat" items="[[answers]]" as="answer">
-          <paper-item att-for-answer="[[answer]]" > [[answer]] </paper-item>
-      </template>
-    </paper-listbox>
-    <paper-button on-click="__checkAnswer" toggles raised class="green">Responder</paper-button>
+
+    <section id="main-container">
+        <paper-listbox attr-for-selected="att-for-answer">
+            <template is="dom-repeat" items="[[answers]]" as="answer">
+                <paper-item att-for-answer="[[answer]]" > [[answer]] </paper-item>
+            </template>
+          </paper-listbox>
+          <paper-button on-click="__checkAnswer" toggles raised class="green">Responder</paper-button>
+          <paper-toast id="toast3" duration="0" class="fit-bottom" text="[[message]]"></paper-toast>
+    </section>
+    
     
   </template>
 
@@ -40,7 +60,7 @@
             type: String,
             value: 'Answer 2'
           },
-          selected: {
+          message: {
             type: String,
             value: ''
           }
@@ -48,15 +68,25 @@
       }
 
       __checkAnswer(){
-        console.log(this.shadowRoot.querySelector('paper-listbox').selected)
+        let style = '';
         if(this.shadowRoot.querySelector('paper-listbox').selected === this.rightAnswer){
-          alert('Respuesta correcta')
+          style = 'right-toast'
+          this.message = 'Respuesta chingona'
         } else {
-          alert('Respuesta incorrecta')
+          style = 'wrong-toast'
+          this.message = 'La cajeteaste'
         }
+        this.__fireToast(this.message, style)
       }
-    }
 
+    __fireToast(message, style){
+        const toast = this.shadowRoot.querySelector('paper-toast');
+        const container = this.shadowRoot.querySelector('#main-container');
+        toast.fitInto = container;
+        toast.text = this.message;
+        toast.open()
+    }
+  }
     window.customElements.define(QuestionComponent.is, QuestionComponent);
   </script>
 </dom-module>
